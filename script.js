@@ -22,12 +22,19 @@ function loaded() {
     function getRandomSequence () {
 
         let sequence = [];
+        var half_grid_height = grid_height/2;
+        let tempNumber = getRandomInt(0, (Math.round(60*half_grid_height/100) + 1));
+        var number = 0;
+        
 
         for (let i = 0; i < grid_width; i++) {
 
-            let half_grid_height = grid_height/2;
+            do {
+                number = getRandomInt(0, (Math.round(60*half_grid_height/100) + 1));
+            } while (number >= tempNumber + 2 || number <= tempNumber - 2);
 
-            sequence[i] = getRandomInt(0, (Math.round(60*half_grid_height/100) + 1));
+            tempNumber = number;
+            sequence[i] = number;
         }
 
         return sequence;
@@ -111,7 +118,6 @@ function loaded() {
     }
 
     let dirt_sequence = getRandomSequence();
-    console.log(dirt_sequence);
 
     for (let i = 0; i < dirt_sequence.length; i++) {
 
