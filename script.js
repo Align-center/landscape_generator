@@ -2,53 +2,89 @@
 
 document.addEventListener('DOMContentLoaded', loaded);
 
-function loaded() {
+function loaded () {
+
+    let terrain = [];
+    var generate = document.querySelector('#generate');
+    var widthRange = document.querySelector('#width');
+    var heightRange = document.querySelector('#height');
+
+    generate.addEventListener('click', onClickGenerateTerrain);
+    widthRange.addEventListener('change', onInputChangeWidth);
+    heightRange.addEventListener('input', onInputChangeHeight);
+
+    function onInputChangeHeight() {
+
+        $('#heightLabel').text(`Height : `+ $('#height').val());
+    }
+
+    function onInputChangeWidth() {
+
+        $('#widthLabel').text(`Width : `+ $('#width').val());
+    }
+
+    function onClickGenerateTerrain() {
+
+        var width = $('#width').val();
+        var height = $('#height').val();
+
+        $('#terrain').remove();
+        
+        let terrain = [];
+        console.log(width);
+        console.log(height);
+        generateTerrain(width, height, terrain);
+    }
+
+    generateTerrain(36, 16, terrain);
+}
+
+function generateTerrain(terrainWidth, terrainHeight, terrain) {
+
+    console.log(terrain);
 
     var square_size = 30;
-    var grid_width = 36; //Work only if it is an even number
-    var grid_height = 16;
+    var grid_width = parseInt(terrainWidth); //Work only if it is an even number
+    var grid_height = parseInt(terrainHeight);
 
     var middle = (grid_width * grid_height)/2;
-    var terrain = [];
-
 
     var grass = `<div class='square grass'></div>`;
-    var dirt = `<div class='square dirt'></div>`
+    var dirt = `<div class='square dirt'></div>`;
 
     function getRandomInt (min, max) {
         return Math.floor(Math.random() * (max - min)) // max is not include in the results
     }
-
+    
     function getRandomSequence (type) {
-
+    
         if (type == undefined) {
             type = dirt;
         }
-
+    
         let sequence = [];
         var half_grid_height = grid_height/2;
         let tempNumber = getRandomInt(0, (Math.round(60*half_grid_height/100) + 1));
         var number = 0;
         
         if (type == grass) {
-
+    
             tempNumber = 1;
-
-            console.log('oui je suis grass');
+    
             for (let i = 0; i < grid_width; i++) {
-
+    
                 do {
                     number = getRandomInt(0, 3);
                 } while (number > tempNumber + 1 || number < tempNumber - 1);
-
+    
                 tempNumber = number;
                 sequence[i] = number;
             }
         }
         else {
-
+    
             for (let i = 0; i < grid_width; i++) {
-
+    
                 do {
                     number = getRandomInt(0, (Math.round(60*half_grid_height/100) + 1));
                 } while (number >= tempNumber + 2 || number <= tempNumber - 2);
@@ -58,34 +94,31 @@ function loaded() {
             }
         }
 
-
-        
-
         return sequence;
     }
-
+    
     function setTerrainType (height, type, i) {
-
+    
         if (height == 0) {
-
+    
             return true;
         }
-
+    
         if (type == grass) {
-
+    
             terrain[middle + i - (grid_width * height)] = type;
         }
         else if (type == dirt) {
-
+    
             if (terrain[middle + i] != grass) {
-
+    
                 terrain[middle + i] = dirt;
             }
             
             terrain[middle + i + (grid_width * height)] = type;
-
+    
         }
-
+    
         setTerrainType(height - 1, type, i);
     }
 
@@ -102,7 +135,6 @@ function loaded() {
     }
 
     let grass_sequence = getRandomSequence(grass);
-    console.log(grass_sequence);
 
     for (let i = 0; i < grass_sequence.length; i++) {
 
